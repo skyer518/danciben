@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import cn.com.u2be.danciben.entity.Word;
+import cn.com.u2be.danciben.model.WordModel;
+import cn.com.u2be.danciben.model.impl.WordModelSQLiteImpl;
 import cn.com.u2be.danciben.paser.PullWordsParser;
 import cn.com.u2be.danciben.paser.WordsParser;
 import cn.com.u2be.danciben.view.WordsView;
@@ -20,42 +22,60 @@ import rx.schedulers.Schedulers;
  */
 public class WordPersenter implements Persenter<WordsView> {
 
+    private WordModel wordModel = new WordModelSQLiteImpl();
 
-    public void LoadWords(final WordsView wiew) {
-        String filename = "/assets/word.xml";
-        Observable.just(filename)
-                .map(new Func1<String, List<Word>>() {
+
+    public void LoadWords(final WordsView view) {
+        Observable.just(Word.class)
+                .map(new Func1<Class<Word>, List<Word>>() {
                     @Override
-                    public List<Word> call(String filename) {
-                        InputStream stream = null;
-                        try {
-                            stream = getClass().getResourceAsStream(filename);
-                            WordsParser parser = new PullWordsParser();
-                            return parser.parse(stream);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            if (stream != null) {
-                                try {
-                                    stream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        return null;
+                    public List<Word> call(Class<Word> wordClass) {
+                        return wordModel.getAllWords();
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Word>>() {
                     @Override
                     public void call(List<Word> words) {
-                        wiew.showData(words);
+                        if (words != null)
+                            view.showData(words);
                     }
                 });
+//        String filename = "/assets/word.xml";
+//        Observable.just(filename)
+//                .map(new Func1<String, List<Word>>() {
+//                    @Override
+//                    public List<Word> call(String filename) {
+//                        InputStream stream = null;
+//                        try {
+//                            stream = getClass().getResourceAsStream(filename);
+//                            WordsParser parser = new PullWordsParser();
+//                            return parser.parse(stream);
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                            if (stream != null) {
+//                                try {
+//                                    stream.close();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                        return null;
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<List<Word>>() {
+//                    @Override
+//                    public void call(List<Word> words) {
+//                        wiew.showData(words);
+//                    }
+//                });
 
 
     }

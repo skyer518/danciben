@@ -72,6 +72,9 @@ public class SectionedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         });
     }
 
+    public SectionedRecyclerAdapter() {
+    }
+
 
     public static class SectionViewHolder extends RecyclerView.ViewHolder {
 

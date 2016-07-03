@@ -17,7 +17,7 @@ import java.util.Set;
 import cn.com.u2be.danciben.R;
 import cn.com.u2be.danciben.entity.Word;
 
-public class IndexableRecyclerViewAdapter extends RecyclerView.Adapter implements SectionedRecyclerAdapter.SectionedRecyclerDelegate {
+public class IndexableRecyclerViewAdapter extends SectionedRecyclerAdapter implements SectionedRecyclerAdapter.SectionedRecyclerDelegate {
     public static final String TAG = "IndexableRecyclerViewAdapter";
     public static final int TYPE_BANNER = 0;
     private final LayoutInflater mLayoutInflater;
@@ -29,7 +29,8 @@ public class IndexableRecyclerViewAdapter extends RecyclerView.Adapter implement
 
     private List<Word> mWords;
     private int mLineNumber = 0;
-    LinkedHashMap<String, List<Word>> mSectionedHashMap;
+    LinkedHashMap<String, List<Word>> mSectionedHashMap = new LinkedHashMap<>();
+
 
     public IndexableRecyclerViewAdapter(Context context, List<Word> models) {
         mWords = models;
@@ -38,7 +39,6 @@ public class IndexableRecyclerViewAdapter extends RecyclerView.Adapter implement
     }
 
     private void init() {
-        mSectionedHashMap = new LinkedHashMap<>();
         Collections.sort(mWords);
         mSections.clear();
         for (int i = 0; i < mWords.size(); i++) {

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.com.u2be.danciben.entity.Word;
 import cn.com.u2be.danciben.loader.PersenterLoaderCallBack;
+import cn.com.u2be.danciben.persenter.ImportPersenter;
 import cn.com.u2be.danciben.persenter.WordPersenter;
 import cn.com.u2be.danciben.view.WordsView;
 import me.seewhy.indexableRecyclerView.IndexableRecyclerView;
@@ -27,6 +29,11 @@ import me.seewhy.indexableRecyclerView.IndexableRecyclerViewAdapter;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, WordsView {
+
+
+    private static final String P_Word = "Q";
+    private static final String P_Import = "W";
+
 
     @InjectView(R.id.irv_words)
     IndexableRecyclerView irvWords;
@@ -42,8 +49,9 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
         initPersenter();
-//        this.indexableRecyclerViewAdapter = new IndexableRecyclerViewAdapter(this, new ArrayList<Word>(0));
-//        irvWords.setAdapter(indexableRecyclerViewAdapter);
+
+        this.indexableRecyclerViewAdapter = new IndexableRecyclerViewAdapter(this, new ArrayList<Word>(0));
+        irvWords.setAdapter(indexableRecyclerViewAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +71,7 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        WordPersenter wordPersenter = (WordPersenter) persenterArrayMap.get("Word");
+        WordPersenter wordPersenter = (WordPersenter) persenterArrayMap.get(P_Word);
         wordPersenter.LoadWords(this);
 
     }
@@ -71,7 +79,8 @@ public class MainActivity extends BaseActivity
     private void initPersenter() {
 
         persenterArrayMap = new HashMap<>(0);
-        persenterArrayMap.put("Word", new WordPersenter());
+        persenterArrayMap.put(P_Word, new WordPersenter());
+        persenterArrayMap.put(P_Import, new ImportPersenter());
 
         getLoaderManager().initLoader(0, null, new PersenterLoaderCallBack(this, getPersenterArrayMap()));
     }
@@ -122,7 +131,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            ImportPersenter importPersenter = (ImportPersenter) persenterArrayMap.get(P_Import);
+            importPersenter.improt(this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -142,11 +152,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void showData(List<Word> words) {
-        this.indexableRecyclerViewAdapter = new IndexableRecyclerViewAdapter(this, words);
-//        this.indexableRecyclerViewAdapter.setmWords(words);
-//        this.indexableRecyclerViewAdapter.notifyDataSetChanged();
-        this.irvWords.setAdapter(indexableRecyclerViewAdapter);
-
+        this.indexableRecyclerViewAdapter.setmWords(words);
+        this.indexableRecyclerViewAdapter.notifyDataSetChanged();
     }
 
 

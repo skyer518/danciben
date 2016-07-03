@@ -1,15 +1,31 @@
 package cn.com.u2be.danciben.entity;
 
+import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
+
 import me.seewhy.indexableRecyclerView.HanziToPinyin;
 
 /**
  * Created by alek on 2016/6/29.
  */
+@Table(name = "Word")
 public class Word implements Comparable<Word> {
+
+    @Column(name = "id", isId = true)
+    private int id;
+    @Column(name = "word")
     private String word;
+
+    @Column(name = "trans")
     private String trans;
+
+    @Column(name = "phonetic")
     private String phonetic;
+
+    @Column(name = "tags")
     private String tags;
+
+    @Column(name = "progress")
     private int progress;
 
     public Word() {
