@@ -2,6 +2,7 @@ package me.seewhy.indexableRecyclerView;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +18,18 @@ import java.util.Set;
 import cn.com.u2be.danciben.R;
 import cn.com.u2be.danciben.entity.Word;
 
-public class IndexableRecyclerViewAdapter extends SectionedRecyclerAdapter implements SectionedRecyclerAdapter.SectionedRecyclerDelegate {
+public class IndexableRecyclerViewAdapter extends RecyclerView.Adapter implements SectionedRecyclerAdapter.SectionedRecyclerDelegate {
     public static final String TAG = "IndexableRecyclerViewAdapter";
     public static final int TYPE_BANNER = 0;
     private final LayoutInflater mLayoutInflater;
 
     public void setmWords(List<Word> mWords) {
         this.mWords = mWords;
-        init();
     }
 
     private List<Word> mWords;
     private int mLineNumber = 0;
-    LinkedHashMap<String, List<Word>> mSectionedHashMap = new LinkedHashMap<>();
+    LinkedHashMap<String, List<Word>> mSectionedHashMap;
 
 
     public IndexableRecyclerViewAdapter(Context context, List<Word> models) {
@@ -39,6 +39,9 @@ public class IndexableRecyclerViewAdapter extends SectionedRecyclerAdapter imple
     }
 
     private void init() {
+
+        Log.i("eeee", "init");
+        mSectionedHashMap = new LinkedHashMap<>();
         Collections.sort(mWords);
         mSections.clear();
         for (int i = 0; i < mWords.size(); i++) {
@@ -67,11 +70,14 @@ public class IndexableRecyclerViewAdapter extends SectionedRecyclerAdapter imple
             pos += mSectionedHashMap.get(title).size();
         }
 
+        Log.i("eeee", "calculateSectionPosition");
         mLineNumber = pos;
     }
 
     @Override
     public List<SectionedRecyclerAdapter.Section> getSections() {
+
+        Log.i("eeee", "getSections");
         return mSections;
     }
 
@@ -88,6 +94,8 @@ public class IndexableRecyclerViewAdapter extends SectionedRecyclerAdapter imple
 
     @Override
     public int getItemCount() {
+
+        Log.i("eeee", "getItemCount");
         return mLineNumber;
     }
 

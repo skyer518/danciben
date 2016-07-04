@@ -48,6 +48,7 @@ public class SectionedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         mBaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
+                Log.i("eeee", "onChanged");
                 mValid = mBaseAdapter.getItemCount() > 0;
                 notifyDataSetChanged();
             }

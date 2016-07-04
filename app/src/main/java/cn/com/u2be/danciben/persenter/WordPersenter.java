@@ -1,15 +1,12 @@
 package cn.com.u2be.danciben.persenter;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import android.util.Log;
+
 import java.util.List;
 
 import cn.com.u2be.danciben.entity.Word;
 import cn.com.u2be.danciben.model.WordModel;
 import cn.com.u2be.danciben.model.impl.WordModelSQLiteImpl;
-import cn.com.u2be.danciben.paser.PullWordsParser;
-import cn.com.u2be.danciben.paser.WordsParser;
 import cn.com.u2be.danciben.view.WordsView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,52 +27,21 @@ public class WordPersenter implements Persenter<WordsView> {
                 .map(new Func1<Class<Word>, List<Word>>() {
                     @Override
                     public List<Word> call(Class<Word> wordClass) {
+                        Log.i("cccc", Thread.currentThread().getName());
                         return wordModel.getAllWords();
                     }
                 })
-                .observeOn(Schedulers.newThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()) // 后台线程取数据
+                .observeOn(AndroidSchedulers.mainThread()) // 主线程显示数据
                 .subscribe(new Action1<List<Word>>() {
                     @Override
                     public void call(List<Word> words) {
-                        if (words != null)
+                        Log.i("dddd", Thread.currentThread().getName());
+                        if (words != null) {
                             view.showData(words);
+                        }
                     }
                 });
-//        String filename = "/assets/word.xml";
-//        Observable.just(filename)
-//                .map(new Func1<String, List<Word>>() {
-//                    @Override
-//                    public List<Word> call(String filename) {
-//                        InputStream stream = null;
-//                        try {
-//                            stream = getClass().getResourceAsStream(filename);
-//                            WordsParser parser = new PullWordsParser();
-//                            return parser.parse(stream);
-//                        } catch (FileNotFoundException e) {
-//                            e.printStackTrace();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            if (stream != null) {
-//                                try {
-//                                    stream.close();
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
-//                        return null;
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<List<Word>>() {
-//                    @Override
-//                    public void call(List<Word> words) {
-//                        wiew.showData(words);
-//                    }
-//                });
 
 
     }
